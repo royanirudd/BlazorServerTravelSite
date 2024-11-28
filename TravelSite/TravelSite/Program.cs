@@ -1,10 +1,15 @@
+using Microsoft.EntityFrameworkCore;
 using TravelSite.Components;
+using TravelSite.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+var myConString = builder.Configuration.GetConnectionString("ConString");
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(myConString));
 
 var app = builder.Build();
 
