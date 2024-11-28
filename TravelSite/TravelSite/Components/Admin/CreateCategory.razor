@@ -4,6 +4,7 @@
 @using TravelSite.Data
 
 @inject AppDbContext dbContext
+@inject NavigationManager nav
 
 
 <div class="row justify-content-center">
@@ -48,6 +49,6 @@
 	public async Task CreateCategoryMethod() {
 		dbContext.Categories.Add(Category);
 		await dbContext.SaveChangesAsync();
-
+		nav.NavigateTo("/Admin/Categories");
 	}
 }

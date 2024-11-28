@@ -1,0 +1,68 @@
+﻿@page "/Admin/Categories"
+@layout AdminLayout
+@using TravelSite.Data
+@using TravelSite.Models
+@using Microsoft.EntityFrameworkCore
+@inject NavigationManager nav
+
+@inject AppDbContext dbContext
+
+@if (Categories == null){
+    <h3>Loading ...</h3>
+}
+else 
+{
+    <div class="row justify-content-center">
+        <div class="col-md-8 d-flex justify-content-center">
+            <h3>Categories</h3>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-8 d-flex justify-content-center">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Country</th>
+                        <th scope="col">Description</th>
+                        <th scope="col" colspan="2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cat in Categories){
+                        <tr>
+                            <td>@cat.Name</td>
+                            <td>@cat.Country</td>
+                            <td>@cat.Description</td>
+                            <td>
+                                <button class="btn btn-warning">Edit</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger" @onclick="@(() => CategoryDeleteMethod(cat.Id))">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@code {
+    private IEnumerable<Category> Categories { get; set; }
+
+    protected override async Task OnInitializedAsync(){
+        Categories = await dbContext.Categories.ToListAsync();
+    }
+
+    private async Task CategoryDeleteMethod(int id) {
+        Console.WriteLine("Button Clicked");
+        var category = await dbContext.Categories.FindAsync(id);
+        if (category != null)
+        {
+            dbContext.Categories.Remove(category);
+            await dbContext.SaveChangesAsync();
+            nav.NavigateTo("/Admin/Categories");
+        }
+    }
+}
